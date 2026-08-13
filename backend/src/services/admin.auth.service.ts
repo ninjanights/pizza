@@ -19,6 +19,8 @@ function getJwtSecret(): string {
 }
 
 export async function loginAdmin(email: string, password: string) {
+
+  console.log(email, password, "54");
   const admin = await prisma.admin.findUnique({
     where: {
       email,

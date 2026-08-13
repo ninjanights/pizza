@@ -44,3 +44,15 @@ export const loginAdminController = async (
     });
   }
 };
+
+export const getCurrentAdminController = (
+  req: Request,
+  res: Response
+) => {
+  return res.status(200).json({
+    success: true,
+    data: {
+      id: req.admin!.id,
+    },
+  });
+};
