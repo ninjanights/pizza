@@ -85,4 +85,31 @@ export async function createOrder(data: CreateOrderData) {
 
     return order;
   });
+
+
+  
+
+
+
+
+}
+
+
+export async function getOrderById(
+  orderId: string,
+  sessionId: string
+) {
+  return prisma.order.findFirst({
+    where: {
+      id: orderId,
+      sessionId,
+    },
+    include: {
+      items: {
+        include: {
+          menuItem: true,
+        },
+      },
+    },
+  });
 }
