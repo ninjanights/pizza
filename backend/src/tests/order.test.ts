@@ -152,4 +152,86 @@ it("should create an order successfully", async () => {
 });
 
 
+// inventory decrease
+it("should decrease inventory after placing an order", async () => {
+  const session = await createTestSession();
+
+  const menuItem = await prisma.menuItem.findFirst({
+    where: {
+      isAvailable: true,
+      inventory: {
+        gte: 2,
+      },
+    },
+  });
+
+  if (!menuItem) {
+    throw new Error("No menu item with enough inventory found");
+  }
+
+  const initialInventory = menuItem.inventory;
+
+  const response = await request(app)
+    .post("/api/orders")
+    .set("Cookie", `sessionId=${session.id}`)
+    .send({
+      deliveryName: "Abir Das",
+      deliveryPhone: "9876543210",
+      deliveryAddress: "Kolkata",
+      items: [
+        {
+          menuItemId: menuItem.id,
+          quantity: 2,
+        },
+      ],
+    });
+
+  expect(response.status).toBe(201);
+
+  const updatedItem = await prisma.menuItem.findUnique({
+    where: {
+      id: menuItem.id,
+    },
+  });
+
+  expect(updatedItem?.inventory).toBe(initialInventory - 2);
+});
+
+it("should reject an order when inventory is insufficient", async () => {
+  const session = await createTestSession();
+
+  const menuItem = await prisma.menuItem.findFirst({
+    where: {
+      isAvailable: true,
+    },
+  });
+
+  if (!menuItem) {
+    throw new Error("No menu item found");
+  }
+
+  const requestedQuantity = menuItem.inventory + 1;
+
+  const response = await request(app)
+    .post("/api/orders")
+    .set("Cookie", `sessionId=${session.id}`)
+    .send({
+      deliveryName: "Abir Das",
+      deliveryPhone: "9876543210",
+      deliveryAddress: "Kolkata",
+      items: [
+        {
+          menuItemId: menuItem.id,
+          quantity: requestedQuantity,
+        },
+      ],
+    });
+
+  expect(response.status).toBe(400);
+  expect(response.body.success).toBe(false);
+  expect(response.body.message).toContain("inventory");
+});
+
+
+
 });
