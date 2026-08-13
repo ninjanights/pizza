@@ -31,7 +31,7 @@ model Session {
 
 model MenuItem {
   id          String      @id @default(uuid())
-  name        String
+  name        String      @unique
   description String
   price       Decimal     @db.Decimal(10, 2)
   imageUrl    String
@@ -75,4 +75,12 @@ model OrderItem {
 
   @@index([orderId])
   @@index([menuItemId])
+}
+
+model Admin {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
