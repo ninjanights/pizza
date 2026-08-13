@@ -352,4 +352,46 @@ describe("POST /api/orders", () => {
     expect(response.status).toBe(404);
     expect(response.body.success).toBe(false);
   });
+
+
+
+  // create order successfully 
+  it("should create an order successfully", async () => {
+  const session = await createTestSession();
+
+  const menuItem = await prisma.menuItem.findFirst({
+    where: {
+      isAvailable: true,
+      inventory: {
+        gt: 0,
+      },
+    },
+  });
+
+  expect(menuItem).not.toBeNull();
+
+  const quantity = 2;
+
+  const response = await request(app)
+    .post("/api/orders")
+    .set("Cookie", `sessionId=${session.id}`)
+    .send({
+      deliveryName: "Abir Das",
+      deliveryPhone: "9876543210",
+      deliveryAddress: "Kolkata",
+      items: [
+        {
+          menuItemId: menuItem!.id,
+          quantity,
+        },
+      ],
+    });
+
+  expect(response.status).toBe(201);
+  expect(response.body.success).toBe(true);
+
+  expect(response.body.data).toHaveProperty("orderId");
+  expect(response.body.data).toHaveProperty("status");
+  expect(response.body.data).toHaveProperty("total");
+});
 });

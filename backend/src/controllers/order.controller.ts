@@ -1,10 +1,11 @@
 import type { Request, Response } from "express";
-import { createOrder, getOrderById } from "../services/order.service.js";
+import { cancelOrder, createOrder, getOrderById, getOrdersBySession } from "../services/order.service.js";
 
 type OrderParams = {
   orderId: string;
 };
 
+// by order id
 export const getOrderController = async (
   req: Request<OrderParams>,
   res: Response
@@ -98,9 +99,13 @@ export const createOrderController = async (
     });
 
     return res.status(201).json({
-      success: true,
-      data: order,
-    });
+  success: true,
+  data: {
+    orderId: order.id,
+    status: order.status,
+    total: order.total,
+  },
+});
   } catch (error) {
     console.error("Create order failed:", error);
 
@@ -112,6 +117,69 @@ export const createOrderController = async (
     return res.status(400).json({
       success: false,
       message,
+    });
+  }
+};
+
+export const getOrdersController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const sessionId = req.session!.id;
+
+    const orders = await getOrdersBySession(sessionId);
+
+    return res.status(200).json({
+      success: true,
+      data: orders,
+    });
+  } catch (error) {
+    console.error("Get orders failed:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to get orders",
+    });
+  }
+};
+
+// cancel an order
+export const cancelOrderController = async (
+  req: Request<OrderParams>,
+  res: Response
+) => {
+  try {
+    const sessionId = req.session!.id;
+
+    const order = await cancelOrder(
+      req.params.orderId,
+      sessionId
+    );
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        orderId: order.id,
+        status: order.status,
+      },
+    });
+  } catch (error) {
+    console.error("Cancel order failed:", error);
+
+    return res.status(400).json({
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Unable to cancel order",
     });
   }
 };

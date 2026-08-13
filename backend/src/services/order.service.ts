@@ -113,3 +113,72 @@ export async function getOrderById(
     },
   });
 }
+
+
+export async function getOrdersBySession(sessionId: string) {
+  return prisma.order.findMany({
+    where: {
+      sessionId,
+    },
+    include: {
+      items: {
+        include: {
+          menuItem: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+}
+
+export async function cancelOrder(
+  orderId: string,
+  sessionId: string
+) {
+  return prisma.$transaction(async (tx) => {
+    const order = await tx.order.findFirst({
+      where: {
+        id: orderId,
+        sessionId,
+      },
+      include: {
+        items: true,
+      },
+    });
+
+    if (!order) {
+      return null;
+    }
+
+    if (order.status !== "RECEIVED") {
+      throw new Error("Order cannot be cancelled");
+    }
+
+    const updatedOrder = await tx.order.update({
+      where: {
+        id: order.id,
+      },
+      data: {
+        status: "CANCELLED",
+      },
+    });
+
+    // Restore inventory
+    for (const item of order.items) {
+      await tx.menuItem.update({
+        where: {
+          id: item.menuItemId,
+        },
+        data: {
+          inventory: {
+            increment: item.quantity,
+          },
+        },
+      });
+    }
+
+    return updatedOrder;
+  });
+}
