@@ -1,4 +1,5 @@
 import prisma from "../config/database.js";
+import type { OrderStatus } from "../generated/prisma/enums.js";
 
 interface CreateOrderData {
   sessionId: string;
@@ -180,5 +181,55 @@ export async function cancelOrder(
     }
 
     return updatedOrder;
+  });
+}
+
+
+// for admin 
+export async function getAllOrdersAdmin() {
+  return prisma.order.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      items: {
+        include: {
+          menuItem: true,
+        },
+      },
+      session: true,
+    },
+  });
+}
+
+
+export async function updateOrderStatusAdmin(
+  orderId: string,
+  status: OrderStatus
+) {
+  const order = await prisma.order.findUnique({
+    where: {
+      id: orderId,
+    },
+  });
+
+  if (!order) {
+    return null;
+  }
+
+  return prisma.order.update({
+    where: {
+      id: orderId,
+    },
+    data: {
+      status,
+    },
+    include: {
+      items: {
+        include: {
+          menuItem: true,
+        },
+      },
+    },
   });
 }

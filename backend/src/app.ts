@@ -7,6 +7,8 @@ import menuRoutes from "./routes/menu.routes.js";
 import sessionRoutes from "./routes/session.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 import adminAuthRoutes from "./routes/admin.auth.routes.js";
+import adminOrderRoutes from "./routes/admin.order.routes.js";
+import adminSessionRoutes from "./routes/admin.session.routes.js";
 
 
 const app = express();
@@ -40,5 +42,7 @@ app.use("/api/menu", menuRoutes);
 app.use("/api/session", sessionRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin", adminAuthRoutes);
+app.use("/api/admin/orders", adminOrderRoutes);
+app.use("/api/admin/sessions", adminSessionRoutes);
 
 export default app;
