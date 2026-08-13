@@ -17,8 +17,6 @@ const prisma = new PrismaClient({
   adapter,
 });
 
-
-
 const menuItems = [
   {
     name: "Margherita Pizza",
@@ -81,40 +79,36 @@ const menuItems = [
 async function main() {
   const passwordHash = await bcrypt.hash("blurrypizza", 12);
 
-await prisma.admin.upsert({
-  where: {
-    email: "pizza@pizza.com",
-  },
-  update: {},
-  create: {
-    email: "pizza@pizza.com",
-    passwordHash,
-  },
-});
-console.log("🍕 Seeded");
+  await prisma.admin.upsert({
+    where: {
+      email: "pizza@pizza.com",
+    },
+    update: {},
+    create: {
+      email: "pizza@pizza.com",
+      passwordHash,
+    },
+  });
+  console.log("🍕 Seeded");
   console.log("Seeding menu... 🍀");
 
   for (const item of menuItems) {
-  await prisma.menuItem.upsert({
-    where: {
-      name: item.name,
-    },
-    update: {
-      description: item.description,
-      price: item.price,
-      imageUrl: item.imageUrl,
-      inventory: item.inventory,
-    },
-    create: item,
-  });
-}
+    await prisma.menuItem.upsert({
+      where: {
+        name: item.name,
+      },
+      update: {
+        description: item.description,
+        price: item.price,
+        imageUrl: item.imageUrl,
+        inventory: item.inventory,
+      },
+      create: item,
+    });
+  }
 
   console.log(`🍀 Seeded ${menuItems.length} menu items`);
 }
-
-
-
-
 
 main()
   .catch((error) => {
