@@ -6,22 +6,18 @@ export default function AdminNavbar() {
 
   async function handleLogout() {
     try {
-      await adminLogout()
-      }catch(e){
-
-       console.error("Logout failed:", e);
+      await adminLogout();
+    } catch (e) {
+      console.error("Logout failed:", e);
     } finally {
-      navigate("/login", { replace: true });
+      navigate("/", { replace: true });
     }
   }
 
   return (
     <nav className="flex h-16 items-center justify-between border-b border-zinc-200 bg-white px-6">
       {/* Logo */}
-      <NavLink
-        to="/dashboard"
-        className="text-xl font-bold text-zinc-900"
-      >
+      <NavLink to="/dashboard" className="text-xl font-bold text-zinc-900">
         🍕 Pizza Server
       </NavLink>
 
@@ -36,6 +32,16 @@ export default function AdminNavbar() {
           }
         >
           Dashboard
+        </NavLink>
+        <NavLink
+          to="/menu"
+          className={({ isActive }) =>
+            isActive
+              ? "font-medium text-zinc-900"
+              : "font-medium text-zinc-500 hover:text-zinc-900"
+          }
+        >
+          Menu
         </NavLink>
 
         <NavLink

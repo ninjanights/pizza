@@ -6,31 +6,40 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 import { OrdersProvider } from "./context/OrderContext";
 import AdminLayout from "./layouts/AdminLayout";
+import Home from "./pages/Home";
+import { MenuProvider } from "./context/MenuContext";
+import Menu from "./pages/Menu";
+import CustomerOrders from "./pages/CustomerOrders";
+import Cart from "./pages/Cart";
 
 function App() {
   return (
     <BrowserRouter>
-      <OrdersProvider>
-        <Routes>
-          {/* Only ppl */}
-          <Route element={<PublicRoute />}>
-            <Route path="/login" element={<AdminLogin />} />
-          </Route>
+      <MenuProvider>
+        <OrdersProvider>
+          <Routes>
+            {/* Public */}
+            <Route element={<PublicRoute />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/menu" element={<Menu />} />
 
-          {/* secured */}
-          <Route element={<ProtectedRoute />}>
-            <Route element={<AdminLayout />}>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-
-              <Route path="/dashboard" element={<AdminDashboard />} />
-              <Route path="/orders" element={<Orders />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/walkinorders" element={<CustomerOrders />} />
             </Route>
-          </Route>
 
-          {/* unkn */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </OrdersProvider>
+            {/* Protected admin */}
+            <Route element={<ProtectedRoute />}>
+              <Route element={<AdminLayout />}>
+                <Route path="/dashboard" element={<AdminDashboard />} />
+                <Route path="/orders" element={<Orders />} />
+              </Route>
+            </Route>
+
+            {/* Unknown route */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </OrdersProvider>
+      </MenuProvider>
     </BrowserRouter>
   );
 }
