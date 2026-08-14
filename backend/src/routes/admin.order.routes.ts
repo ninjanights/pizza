@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  getAdminDashboardController,
   getAllOrdersController,
   updateOrderStatusController,
 } from "../controllers/admin.order.controller.js";
@@ -11,10 +12,6 @@ const router = Router();
 router.get("/", requireAdmin, getAllOrdersController);
 
 // Update order status admin
-router.patch(
-  "/:orderId/status",
-  requireAdmin,
-  updateOrderStatusController
-);
-
+router.patch("/:orderId/status", requireAdmin, updateOrderStatusController);
+router.get("/dashboard", requireAdmin, getAdminDashboardController);
 export default router;

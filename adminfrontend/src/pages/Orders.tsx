@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
-import { getAdminOrders, updateOrderStatus } from "../services/admin.service";
-import type { AdminOrder, OrderStatus } from "../types/order";
+import { useSearchParams } from "react-router-dom";
+import { useOrders } from "../context/OrderContext";
+import OrderCard from "../components/admin/OrderStripCard";
+import type { OrderStatus } from "../types/order";
 
 const statuses: OrderStatus[] = [
   "RECEIVED",
@@ -12,54 +13,11 @@ const statuses: OrderStatus[] = [
 ];
 
 export default function Orders() {
-  const [orders, setOrders] = useState<AdminOrder[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { orders, loading, error } = useOrders();
 
-  useEffect(() => {
-    async function loadOrders() {
-      try {
-        const data = await getAdminOrders();
-        setOrders(data);
-      } catch (error) {
-        setError(
-          error instanceof Error
-            ? error.message
-            : "Failed to load orders"
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
+  const [searchParams, setSearchParams] = useSearchParams();
 
-    loadOrders();
-  }, []);
-
-  async function handleStatusChange(
-    orderId: string,
-    status: OrderStatus
-  ) {
-    try {
-      const updatedOrder = await updateOrderStatus(
-        orderId,
-        status
-      );
-
-      setOrders((currentOrders) =>
-        currentOrders.map((order) =>
-          order.id === orderId
-            ? updatedOrder
-            : order
-        )
-      );
-    } catch (error) {
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Failed to update order"
-      );
-    }
-  }
+  const currentStatus = searchParams.get("status") as OrderStatus | null;
 
   if (loading) {
     return <p>Loading orders...</p>;
@@ -69,62 +27,59 @@ export default function Orders() {
     return <p>{error}</p>;
   }
 
+  const filteredOrders = currentStatus
+    ? orders.filter((order) => order.status === currentStatus)
+    : orders;
+
+  function handleFilterChange(status: string) {
+    if (status === "ALL") {
+      setSearchParams({});
+    } else {
+      setSearchParams({ status });
+    }
+  }
+
   return (
-    <div>
-      <h1>Orders</h1>
+    <div className="p-6">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">Orders</h1>
 
-      {orders.length === 0 ? (
-        <p>No orders found.</p>
+        <p className="mt-1 text-sm text-zinc-500">
+          Manage and monitor all orders
+        </p>
+      </div>
+
+      {/* Filter */}
+      <div className="mb-6">
+        <select
+          value={currentStatus ?? "ALL"}
+          onChange={(e) => handleFilterChange(e.target.value)}
+          className="rounded-lg border border-zinc-300 bg-white px-4 py-2"
+        >
+          <option value="ALL">All Orders</option>
+
+          {statuses.map((status) => (
+            <option key={status} value={status}>
+              {status.replaceAll("_", " ")}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Orders */}
+      {filteredOrders.length === 0 ? (
+        <p className="text-zinc-500">No orders found.</p>
       ) : (
-        orders.map((order) => (
-          <div key={order.id}>
-            <h2>Order #{order.id}</h2>
-
-            <p>
-              Customer: {order.deliveryName}
-            </p>
-
-            <p>
-              Phone: {order.deliveryPhone}
-            </p>
-
-            <p>
-              Address: {order.deliveryAddress}
-            </p>
-
-            <p>
-              Total: ₹{order.total}
-            </p>
-
-            <select
-              value={order.status}
-              onChange={(e) =>
-                handleStatusChange(
-                  order.id,
-                  e.target.value as OrderStatus
-                )
-              }
-            >
-              {statuses.map((status) => (
-                <option
-                  key={status}
-                  value={status}
-                >
-                  {status}
-                </option>
-              ))}
-            </select>
-
-            <div>
-              {order.items.map((item) => (
-                <p key={item.id}>
-                  {item.menuItem.name} × {item.quantity}
-                </p>
-              ))}
-            </div>
-          </div>
-        ))
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredOrders.map((order) => (
+            <OrderStripCard key={order.id} order={order} />
+          ))}
+        </div>
       )}
+
+      {/* paginate in future */}
+
+
     </div>
   );
 }

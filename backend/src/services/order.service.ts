@@ -86,20 +86,9 @@ export async function createOrder(data: CreateOrderData) {
 
     return order;
   });
-
-
-  
-
-
-
-
 }
 
-
-export async function getOrderById(
-  orderId: string,
-  sessionId: string
-) {
+export async function getOrderById(orderId: string, sessionId: string) {
   return prisma.order.findFirst({
     where: {
       id: orderId,
@@ -114,7 +103,6 @@ export async function getOrderById(
     },
   });
 }
-
 
 export async function getOrdersBySession(sessionId: string) {
   return prisma.order.findMany({
@@ -134,10 +122,7 @@ export async function getOrdersBySession(sessionId: string) {
   });
 }
 
-export async function cancelOrder(
-  orderId: string,
-  sessionId: string
-) {
+export async function cancelOrder(orderId: string, sessionId: string) {
   return prisma.$transaction(async (tx) => {
     const order = await tx.order.findFirst({
       where: {
@@ -184,28 +169,56 @@ export async function cancelOrder(
   });
 }
 
+// for admin
+export async function getAllOrdersAdmin({
+  page = 1,
+  limit = 10,
+  status,
+}: { page?: number; limit?: number; status?: OrderStatus | undefined } = {}) {
+  const skip = (page - 1) * limit;
+  const where = status
+    ? {
+        status,
+      }
+    : {};
 
-// for admin 
-export async function getAllOrdersAdmin() {
-  return prisma.order.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-    include: {
-      items: {
-        include: {
-          menuItem: true,
-        },
+  const [orders, total] = await prisma.$transaction([
+    prisma.order.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: {
+        createdAt: "desc",
       },
-      session: true,
-    },
-  });
-}
+      include: {
+        items: {
+          include: {
+            menuItem: true,
+          },
+        },
+        session: true,
+      },
+    }),
 
+    prisma.order.count({
+      where,
+    }),
+  ]);
+
+  return {
+    orders,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+}
 
 export async function updateOrderStatusAdmin(
   orderId: string,
-  status: OrderStatus
+  status: OrderStatus,
 ) {
   const order = await prisma.order.findUnique({
     where: {
@@ -232,4 +245,121 @@ export async function updateOrderStatusAdmin(
       },
     },
   });
+}
+
+// dashboard admin
+export async function getAdminDashboardStats() {
+  const orders = await prisma.order.findMany({
+    select: {
+      status: true,
+      total: true,
+      deliveryAddress: true,
+      deliveryName: true,
+      items: {
+        select: {
+          quantity: true,
+          menuItem: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  type StatusStats = {
+    orderCount: number;
+    revenue: number;
+    places: Map<string, number>;
+    customers: Map<string, number>;
+    items: Map<string, number>;
+  };
+
+  const statusMap = new Map<OrderStatus, StatusStats>();
+  for (const order of orders) {
+    let stats = statusMap.get(order.status);
+    if (!stats) {
+      stats = {
+        orderCount: 0,
+        revenue: 0,
+        places: new Map(),
+        customers: new Map(),
+        items: new Map(),
+      };
+      statusMap.set(order.status, stats);
+    }
+    // Order count
+    stats.orderCount += 1;
+    // Revenue
+    // Cancelled orders contribute ₹0
+    if (order.status !== "CANCELLED") {
+      stats.revenue += Number(order.total);
+    }
+    // Place
+    stats.places.set(
+      order.deliveryAddress,
+      (stats.places.get(order.deliveryAddress) ?? 0) + 1,
+    );
+
+    // Customer
+    stats.customers.set(
+      order.deliveryName,
+      (stats.customers.get(order.deliveryName) ?? 0) + 1,
+    );
+
+    // Items
+    for (const item of order.items) {
+      stats.items.set(
+        item.menuItem.name,
+        (stats.items.get(item.menuItem.name) ?? 0) + item.quantity,
+      );
+    }
+  }
+
+  const statuses = Array.from(statusMap.entries()).map(([status, stats]) => {
+    const mostOrderedPlace = Array.from(stats.places.entries()).sort(
+      (a, b) => b[1] - a[1],
+    )[0];
+
+    const mostOrderedCustomer = Array.from(stats.customers.entries()).sort(
+      (a, b) => b[1] - a[1],
+    )[0];
+
+    const mostOrderedItem = Array.from(stats.items.entries()).sort(
+      (a, b) => b[1] - a[1],
+    )[0];
+
+    return {
+      status,
+
+      orderCount: stats.orderCount,
+
+      revenue: stats.revenue,
+
+      mostOrderedPlace: mostOrderedPlace
+        ? {
+            address: mostOrderedPlace[0],
+            orderCount: mostOrderedPlace[1],
+          }
+        : null,
+
+      mostOrderedCustomer: mostOrderedCustomer
+        ? {
+            name: mostOrderedCustomer[0],
+            orderCount: mostOrderedCustomer[1],
+          }
+        : null,
+
+      mostOrderedItem: mostOrderedItem
+        ? {
+            name: mostOrderedItem[0],
+            quantity: mostOrderedItem[1],
+          }
+        : null,
+    };
+  });
+  return {
+    statuses,
+  };
 }
