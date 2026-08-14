@@ -1,15 +1,20 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { adminLogout } from "../../services/admin.service";
+import { useAdminAuth } from "../../context/AdminAuthContext";
 
 export default function AdminNavbar() {
   const navigate = useNavigate();
+  const { logout } = useAdminAuth();
 
   async function handleLogout() {
     try {
       await adminLogout();
+     
     } catch (e) {
       console.error("Logout failed:", e);
     } finally {
+         logout()
+      
       navigate("/", { replace: true });
     }
   }

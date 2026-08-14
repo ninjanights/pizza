@@ -1,7 +1,12 @@
 import { useMenu } from "../context/MenuContext";
+import MenuItemCard from "../components/MenuItemCard";
+import { useCart } from "../context/CartContext";
+import { useAdminAuth } from "../context/AdminAuthContext";
 
 export default function Menu() {
   const { menuItems, loading, error } = useMenu();
+  const { cart, addToCart, increaseQuantity, decreaseQuantity } = useCart();
+  const { isAuthenticated: isAdmin } = useAdminAuth();
 
   if (loading) {
     return <p>Loading menu...</p>;
@@ -12,23 +17,29 @@ export default function Menu() {
   }
 
   return (
-    <main>
-      <h1>🍕 Menu</h1>
+    <main className="p-6">
+      <h1 className="mb-6 text-2xl font-bold">🍕 Menu</h1>
 
-      <div>
-        {menuItems.map((item) => (
-          <div key={item.id}>
-            <h2>{item.name}</h2>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {menuItems.map((item) => {
+          const cartItem = cart.items.find(
+            (cartItem) => cartItem.menuItem.id === item.id,
+          );
 
-            <p>{item.description}</p>
+          const quantity = cartItem?.quantity ?? 0;
 
-            <p>₹{item.price}</p>
-
-            <p>
-              {item.inventory} Available
-            </p>
-          </div>
-        ))}
+          return (
+            <MenuItemCard
+              key={item.id}
+              item={item}
+              isAdmin={isAdmin}
+              quantity={quantity}
+              onAddToCart={() => addToCart(item)}
+              onIncrease={() => increaseQuantity(item.id)}
+              onDecrease={() => decreaseQuantity(item.id)}
+            />
+          );
+        })}
       </div>
     </main>
   );

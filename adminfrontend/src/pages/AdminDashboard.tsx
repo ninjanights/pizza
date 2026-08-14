@@ -1,8 +1,8 @@
 import OrderStatusCard from "../components/admin/OrderStatusCard";
-import { useOrders } from "../context/OrderContext";
+import { useAdminOrders } from "../context/AdminOrderContext";
 
 export default function AdminDashboard() {
-  const { dashboard, loading, error } = useOrders();
+  const { dashboard, loading, error } = useAdminOrders();
 
   if (loading) {
     return <p>Loading orders...</p>;

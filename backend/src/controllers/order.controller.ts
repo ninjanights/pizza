@@ -121,6 +121,7 @@ export const createOrderController = async (
   }
 };
 
+// for a user to see list of orders
 export const getOrdersController = async (
   req: Request,
   res: Response

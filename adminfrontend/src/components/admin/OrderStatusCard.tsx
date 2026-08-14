@@ -1,4 +1,4 @@
-import type { StatusStats } from "../../context/OrderContext";
+import type { StatusStats } from "../../context/AdminOrderContext";
 import type { OrderStatus } from "../../types/order";
 
 type OrderStatusCardProps = {

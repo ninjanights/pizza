@@ -49,9 +49,9 @@ type OrdersContextType = {
   updateStatus: (orderId: string, status: OrderStatus) => Promise<void>;
 };
 
-const OrdersContext = createContext<OrdersContextType | undefined>(undefined);
+const AdminOrdersContext = createContext<OrdersContextType | undefined>(undefined);
 
-export function OrdersProvider({ children }: { children: ReactNode }) {
+export function AdminOrdersProvider({ children }: { children: ReactNode }) {
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [dashboard, setDashboard] = useState<DashboardStats | null>(null);
 
@@ -94,7 +94,7 @@ export function OrdersProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <OrdersContext.Provider
+    <AdminOrdersContext.Provider
       value={{
         orders,
         dashboard,
@@ -104,15 +104,15 @@ export function OrdersProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
-    </OrdersContext.Provider>
+    </AdminOrdersContext.Provider>
   );
 }
 
-export function useOrders() {
-  const context = useContext(OrdersContext);
+export function useAdminOrders() {
+  const context = useContext(AdminOrdersContext);
 
   if (!context) {
-    throw new Error("useOrders must be used inside OrdersProvider");
+    throw new Error("useAdminOrders must be used inside OrdersProvider");
   }
 
   return context;

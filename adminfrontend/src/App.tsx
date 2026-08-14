@@ -1,46 +1,64 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
-import Orders from "./pages/Orders";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
-import { OrdersProvider } from "./context/OrderContext";
+import { AdminOrdersProvider } from "./context/AdminOrderContext";
 import AdminLayout from "./layouts/AdminLayout";
 import Home from "./pages/Home";
 import { MenuProvider } from "./context/MenuContext";
-import Menu from "./pages/Menu";
 import CustomerOrders from "./pages/CustomerOrders";
 import Cart from "./pages/Cart";
+import CustomerLayout from "./layouts/CustomerLayout";
+import MenuPage from "./pages/MenuPage";
+import { AdminAuthProvider } from "./context/AdminAuthContext";
+import { CartProvider } from "./context/CartContext";
+import Checkout from "./pages/Checkout";
+import AdminOrders from "./pages/AdminOrders";
+import { CustomerOrdersProvider } from "./context/CustomerOrdersContext";
 
 function App() {
   return (
-    <BrowserRouter>
-      <MenuProvider>
-        <OrdersProvider>
-          <Routes>
-            {/* Public */}
-            <Route element={<PublicRoute />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/menu" element={<Menu />} />
+    <CartProvider>
+      <BrowserRouter>
+        <AdminAuthProvider>
+          <MenuProvider>
+            <AdminOrdersProvider>
+              <CustomerOrdersProvider>
+                <Routes>
+                  {/* Public */}
+                  <Route element={<PublicRoute />}>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/menu" element={<MenuPage />} />
 
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/walkinorders" element={<CustomerOrders />} />
-            </Route>
+                    <Route element={<CustomerLayout />}>
+                      <Route path="/cart" element={<Cart />} />
+                      <Route path="/checkout" element={<Checkout />} />
 
-            {/* Protected admin */}
-            <Route element={<ProtectedRoute />}>
-              <Route element={<AdminLayout />}>
-                <Route path="/dashboard" element={<AdminDashboard />} />
-                <Route path="/orders" element={<Orders />} />
-              </Route>
-            </Route>
+                      <Route
+                        path="/walkinorders"
+                        element={<CustomerOrders />}
+                      />
+                    </Route>
+                  </Route>
 
-            {/* Unknown route */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </OrdersProvider>
-      </MenuProvider>
-    </BrowserRouter>
+                  {/* Protected admin */}
+                  <Route element={<ProtectedRoute />}>
+                    <Route element={<AdminLayout />}>
+                      <Route path="/dashboard" element={<AdminDashboard />} />
+                      <Route path="/orders" element={<AdminOrders />} />
+                    </Route>
+                  </Route>
+
+                  {/* Unknown route */}
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </CustomerOrdersProvider>
+            </AdminOrdersProvider>
+          </MenuProvider>
+        </AdminAuthProvider>
+      </BrowserRouter>
+    </CartProvider>
   );
 }
 
