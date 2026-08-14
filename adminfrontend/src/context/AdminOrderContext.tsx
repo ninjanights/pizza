@@ -7,7 +7,6 @@ import {
 } from "react";
 
 import {
-  getAdminOrders,
   getAdminDashboard,
   updateOrderStatus,
 } from "../services/admin.service";

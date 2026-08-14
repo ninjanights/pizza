@@ -3,7 +3,7 @@ import CustomerNavbar from "../components/customer/CustomerNavbar";
 
 export default function CustomerLayout() {
   return (
-    <div className="min-h-screen bg-zinc-50">
+    <div className="app-shell">
       <CustomerNavbar />
 
       <main>

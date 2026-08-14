@@ -12,8 +12,14 @@ export const getOrderController = async (
 ) => {
   try {
     const { orderId } = req.params;
-    const sessionId = req.session!.id;
+    const sessionId = req.cookies.sessionId;
 
+    if (!sessionId) {
+      return res.status(401).json({
+        success: false,
+        message: "Session required",
+      });
+    }
     const order = await getOrderById(orderId, sessionId);
 
     if (!order) {
@@ -37,12 +43,14 @@ export const getOrderController = async (
   }
 };
 
+
+
 export const createOrderController = async (
   req: Request,
   res: Response
 ) => {
   try {
-    const sessionId = req.session?.id;
+    const sessionId = req.cookies.sessionId;
 
     if (!sessionId) {
       return res.status(401).json({
@@ -127,8 +135,14 @@ export const getOrdersController = async (
   res: Response
 ) => {
   try {
-    const sessionId = req.session!.id;
+      const sessionId = req.cookies.sessionId;
 
+    if (!sessionId) {
+      return res.status(401).json({
+        success: false,
+        message: "Session required",
+      });
+    }
     const orders = await getOrdersBySession(sessionId);
 
     return res.status(200).json({
@@ -151,8 +165,14 @@ export const cancelOrderController = async (
   res: Response
 ) => {
   try {
-    const sessionId = req.session!.id;
+      const sessionId = req.cookies.sessionId;
 
+    if (!sessionId) {
+      return res.status(401).json({
+        success: false,
+        message: "Session required",
+      });
+    }
     const order = await cancelOrder(
       req.params.orderId,
       sessionId

@@ -1,9 +1,9 @@
+import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
 export default function Cart() {
-
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const {
     cart,
@@ -14,96 +14,123 @@ export default function Cart() {
   } = useCart();
 
   if (cart.items.length === 0) {
-    return <p>Your cart is empty.</p>;
+    return (
+      <main className="p-6">
+        <div className="mb-6 px-[32px] flex items-center gap-4">
+          <h1 className="text-2xl font-black">Cart</h1>
+          <div className="h-12 w-[1px] bg-neutral-400"></div>
+          <p className="max-w-xl text-[12px] font-medium leading-6 text-neutral-700">
+            Your cart is waiting for its first little masterpiece.
+            Pick a favorite dish and we will start warming up the route.
+          </p>
+        </div>
+
+        <div className="cart-card mx-auto flex max-w-md flex-col items-center rounded-xl p-8 text-center">
+          <ShoppingCart className="mb-3 h-10 w-10 stroke-[#D99B77]" />
+          <p className="text-xl font-black text-neutral-800">Your cart is empty.</p>
+          <button
+            onClick={() => navigate("/menu")}
+            className="cart-accent-button mt-5 rounded-lg px-6 py-3 font-black text-neutral-900"
+          >
+            Back to Menu
+          </button>
+        </div>
+      </main>
+    );
   }
 
   return (
     <main className="p-6">
-      <h1 className="mb-6 text-2xl font-bold">🛒 Cart</h1>
+      <div className="mb-6 px-[32px] flex items-center gap-4">
+        <h1 className="text-2xl font-black">Cart</h1>
+        <div className="h-12 w-[1px] bg-neutral-400"></div>
+        <p className="max-w-xl text-[12px] font-medium leading-6 text-neutral-700">
+          Your chosen bites are lined up and ready for the road.
+          One tap more and we will bring the feast to your doorstep.
+        </p>
+      </div>
 
-      <div className="space-y-4">
-        {cart.items.map((item) => (
-          <div
-            key={item.menuItem.id}
-            className="flex items-center justify-between rounded-xl border bg-white p-4"
-          >
-            <div>
-              <h2 className="font-semibold">
-                {item.menuItem.name}
-              </h2>
-
-              <p className="text-sm text-zinc-500">
-                INR{item.menuItem.price} each
-              </p>
-            </div>
-
-            {/* Quantity controls */}
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() =>
-                  decreaseQuantity(item.menuItem.id)
-                }
-                className="flex h-8 w-8 items-center justify-center rounded-lg border"
-              >
-                −
-              </button>
-
-              <span className="min-w-5 text-center font-medium">
-                {item.quantity}
-              </span>
-
-              <button
-                onClick={() =>
-                  increaseQuantity(item.menuItem.id)
-                }
-                disabled={
-                  item.quantity >= item.menuItem.inventory
-                }
-                className="flex h-8 w-8 items-center justify-center rounded-lg border disabled:opacity-40"
-              >
-                +
-              </button>
-            </div>
-
-            <p className="font-semibold">
-              ₹
-              {(
-                Number(item.menuItem.price) *
-                item.quantity
-              ).toLocaleString("en-IN")}
-            </p>
-
-            <button
-              onClick={() =>
-                removeFromCart(item.menuItem.id)
-              }
-              className="text-sm text-red-500"
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_320px]">
+        <div className="space-y-4">
+          {cart.items.map((item) => (
+            <div
+              key={item.menuItem.id}
+              className="cart-card rounded-xl p-4"
             >
-              Remove
-            </button>
-          </div>
-        ))}
-      </div>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <ShoppingCart className="h-4 w-4 stroke-[#D99B77]" />
+                    <h2 className="text-lg font-black text-neutral-900">
+                      {item.menuItem.name}
+                    </h2>
+                  </div>
 
-      <div className="mt-6 text-right">
-        <p className="text-xl font-bold">
-          Total: ₹{totalPrice.toLocaleString("en-IN")}
-        </p>
-      </div>
+                  <p className="mt-1 text-[12px] font-bold text-neutral-500">
+                    {item.menuItem.price} INR each
+                  </p>
 
+                  <p className="mt-3 text-4xl font-black text-[#769898]">
+                    {(
+                      Number(item.menuItem.price) * item.quantity
+                    ).toLocaleString("en-IN")}
+                    <span className="text-[12px] text-neutral-600">INR</span>
+                  </p>
+                </div>
 
+                <div className="flex items-center justify-between gap-4 sm:justify-end">
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => decreaseQuantity(item.menuItem.id)}
+                      className="flex h-9 w-9 items-center justify-center rounded-lg text-4xl font-black text-neutral-800"
+                      aria-label={`Decrease ${item.menuItem.name}`}
+                    >
+                      <Minus className="h-6 w-6" strokeWidth={4} />
+                    </button>
 
-      <div className="mt-8 flex items-center justify-between">
-        <p className="text-xl font-bold">
-          Total: ₹{totalPrice.toLocaleString("en-IN")}
-        </p>
+                    <span className="min-w-6 text-center text-4xl font-black text-neutral-800">
+                      {item.quantity}
+                    </span>
 
-        <button
-          onClick={() => navigate("/checkout")}
-          className="rounded-lg bg-black px-6 py-3 font-medium text-white"
-        >
-          Place Order
-        </button>
+                    <button
+                      onClick={() => increaseQuantity(item.menuItem.id)}
+                      disabled={item.quantity >= item.menuItem.inventory}
+                      className="flex h-9 w-9 items-center justify-center rounded-lg text-4xl font-black text-neutral-800 disabled:opacity-40"
+                      aria-label={`Increase ${item.menuItem.name}`}
+                    >
+                      <Plus className="h-6 w-6" strokeWidth={4} />
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={() => removeFromCart(item.menuItem.id)}
+                    className="flex items-center gap-1 text-[12px] font-black text-red-600"
+                  >
+                    <Trash2 className="h-4 w-4" strokeWidth={3} />
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <aside className="cart-card h-fit rounded-xl p-5">
+          <p className="text-[12px] font-bold uppercase tracking-wide text-neutral-500">
+            Cart Total
+          </p>
+          <p className="mt-2 text-5xl font-black text-[#769898]">
+            {totalPrice.toLocaleString("en-IN")}
+            <span className="text-[12px] text-neutral-600">INR</span>
+          </p>
+
+          <button
+            onClick={() => navigate("/checkout")}
+            className="cart-accent-button mt-6 w-full rounded-xl px-6 py-5 text-center text-lg font-black text-neutral-900"
+          >
+            Place Order
+          </button>
+        </aside>
       </div>
     </main>
   );

@@ -1,1 +1,102 @@
 @import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+body {
+  background: #d4d4d8; /* neutral-300 */
+}
+
+#root {
+  max-width: 1200px;
+  min-height: 100vh;
+  margin: 0 auto;
+  background: #d4d4d8; /* neutral-300 */
+}
+
+.app-shell {
+  width: min(1200px, calc(100% - 48px));
+  min-height: 100vh;
+  margin: 0 auto;
+  background-color: #d4d4d8; /* neutral-300 */
+}
+.app-shell,
+.app-shell nav,
+.app-shell main,
+.app-shell header,
+.app-shell footer,
+.app-shell aside,
+.app-shell > div,
+.app-shell section,
+.app-shell form,
+.app-shell article,
+.app-shell [class*="bg-"] {
+  background: #d4d4d8 !important; /* neutral-300 */
+  box-shadow: none !important;
+}
+
+.app-shell *,
+.app-shell *::before,
+.app-shell *::after {
+  border-color: transparent !important;
+}
+
+.app-shell [class*="border"] {
+  border-width: 0 !important;
+}
+
+.app-shell [class*="shadow"] {
+  box-shadow: none !important;
+}
+
+.app-shell [class*="text-white"] {
+  color: #18181b !important;
+}
+
+.home-walk-card {
+  background: #D99B77 !important;
+}
+.app-shell .home-auth-input {
+  background: transparent !important;
+  border: 4px solid #e4e4e7 !important; /* neutral-200 */
+}
+
+.app-shell .home-login-button {
+  background: #D99B77 !important;
+}
+.app-shell .cart-card {
+  background: #e4e4e7 !important; /* neutral-200 */
+}
+
+.app-shell .cart-accent-button {
+  background: #D99B77 !important;
+}
+.app-shell .orders-card {
+  background: #e4e4e7 !important; /* neutral-200 */
+}
+
+.app-shell .orders-accent-button {
+  background: #D99B77 !important;
+}
+
+.app-shell .orders-status-active {
+  background: #d4d4d8 !important; /* neutral-300 */
+}
+
+.app-shell .orders-status-delivered {
+  background: #bbf7d0 !important;
+}
+
+.app-shell .orders-status-cancelled {
+  background: #fecaca !important;
+}
+.app-shell .orders-filter-button {
+  background: #e4e4e7 !important; /* neutral-200 */
+}

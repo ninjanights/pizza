@@ -10,3 +10,11 @@ export const createSession = async () => {
     },
   });
 };
+
+export async function getSession(sessionId: string) {
+  return prisma.session.findUnique({
+    where: {
+      id: sessionId,
+    },
+  });
+}

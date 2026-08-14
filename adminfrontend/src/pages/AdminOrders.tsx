@@ -63,20 +63,25 @@ export default function AdminOrders() {
 
   return (
     <main className="p-6">
-      <h1 className="mb-6 text-2xl font-bold">
-        Orders
-      </h1>
+      <div className="mb-6 px-[32px] flex items-center gap-4">
+        <h1 className="text-2xl font-black">Orders</h1>
+        <div className="h-12 w-[1px] bg-neutral-400"></div>
+        <p className="max-w-xl text-[12px] font-medium leading-6 text-neutral-700">
+          Every order has its own small weather system.
+          Nudge the status forward and keep the kitchen sky clear.
+        </p>
+      </div>
 
       {/* Status filters */}
-      <div className="mb-6 flex gap-2">
+      <div className="mb-6 flex flex-wrap gap-2">
         {statuses.map((item) => (
           <button
             key={item}
             onClick={() => handleStatusChange(item)}
             className={
               status === item
-                ? "rounded-lg bg-zinc-900 px-4 py-2 text-white"
-                : "rounded-lg bg-zinc-100 px-4 py-2 text-zinc-600"
+                ? "orders-accent-button rounded-lg px-4 py-2 font-black text-neutral-900"
+                : "orders-filter-button rounded-lg px-4 py-2 font-black text-neutral-600"
             }
           >
             {item.replaceAll("_", " ")}

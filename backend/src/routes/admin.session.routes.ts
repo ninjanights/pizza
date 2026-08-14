@@ -10,4 +10,5 @@ router.get(
   getAllSessionsController
 );
 
+
 export default router;
