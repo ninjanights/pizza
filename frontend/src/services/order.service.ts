@@ -1,6 +1,6 @@
 import type { AdminOrder } from "../types/order";
+import { API_URL } from './api';
 
-const API_URL = "http://localhost:8000/api";
 
 export type CreateOrderRequest = {
   deliveryName: string;

@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8000/api";
+import { API_URL } from './api';
 
 export async function getMenuItems() {
   const response = await fetch(`${API_URL}/menu`);

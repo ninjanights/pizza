@@ -1,5 +1,5 @@
 import type { AdminOrder, OrderStatus } from "../types/order";
-const API_URL = "http://localhost:8000/api";
+import { API_URL } from './api';
 
 export type AdminOrdersResponse = {
   orders: AdminOrder[];
