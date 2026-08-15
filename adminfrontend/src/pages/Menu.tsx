@@ -9,7 +9,7 @@ export default function Menu() {
   const { isAuthenticated: isAdmin } = useAdminAuth();
 
   if (loading) {
-    return <p>Loading menu...</p>;
+    return <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-6"><p className="text-xl font-black text-neutral-500">Loading menu...</p></main>;
   }
 
   if (error) {

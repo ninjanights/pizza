@@ -1,5 +1,7 @@
+import { memo } from "react";
 import type { AdminOrder, OrderStatus } from "../../types/order";
 import { useAdminOrders } from "../../context/AdminOrderContext";
+import { OrderStatusIcon, statusInfo } from "./orderStatusMeta";
 
 type OrderCardProps = {
   order: AdminOrder;
@@ -13,112 +15,13 @@ const statuses: OrderStatus[] = [
   "DELIVERED",
 ];
 
-const statusLabels: Record<OrderStatus, string> = {
-  RECEIVED: "Received",
-  PREPARING: "Preparing",
-  READY: "Ready",
-  OUT_FOR_DELIVERY: "Out for Delivery",
-  DELIVERED: "Delivered",
-  CANCELLED: "Cancelled",
-};
+const stepCircleClass = "flex h-9 w-9 items-center justify-center rounded-full transition";
+const mutedTextClass = "text-[12px] font-bold text-neutral-500";
+const detailLabelClass = "text-[12px] font-black uppercase tracking-wide text-neutral-500";
+const detailPanelClass = "rounded-lg bg-neutral-300 p-4";
 
-function StatusIcon({ status }: { status: OrderStatus }) {
-  switch (status) {
-    case "RECEIVED":
-      return (
-        <svg
-          viewBox="0 0 24 24"
-          className="h-6 w-6"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-        >
-          <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z" />
-          <path d="M4 7.5 12 12l8-4.5" />
-          <path d="M12 12v9" />
-        </svg>
-      );
-
-    case "PREPARING":
-      return (
-        <svg
-          viewBox="0 0 24 24"
-          className="h-6 w-6"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-        >
-          <path d="M5 10h14v8a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-8Z" />
-          <path d="M3 10h18" />
-          <path d="M8 6c0-1.5 1-2 1-3" />
-          <path d="M12 6c0-1.5 1-2 1-3" />
-          <path d="M16 6c0-1.5 1-2 1-3" />
-        </svg>
-      );
-
-    case "READY":
-      return (
-        <svg
-          viewBox="0 0 24 24"
-          className="h-6 w-6"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-        >
-          <circle cx="12" cy="12" r="9" />
-          <path d="m8 12 2.5 2.5L16 9" />
-        </svg>
-      );
-
-    case "OUT_FOR_DELIVERY":
-      return (
-        <svg
-          viewBox="0 0 24 24"
-          className="h-6 w-6"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-        >
-          <path d="M3 6h11v10H3z" />
-          <path d="M14 10h4l3 3v3h-7z" />
-          <circle cx="7" cy="18" r="2" />
-          <circle cx="18" cy="18" r="2" />
-        </svg>
-      );
-
-    case "DELIVERED":
-      return (
-        <svg
-          viewBox="0 0 24 24"
-          className="h-6 w-6"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-        >
-          <circle cx="12" cy="12" r="9" />
-          <path d="m7.5 12 3 3 6-6" />
-        </svg>
-      );
-
-    case "CANCELLED":
-      return (
-        <svg
-          viewBox="0 0 24 24"
-          className="h-6 w-6"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-        >
-          <circle cx="12" cy="12" r="9" />
-          <path d="m9 9 6 6M15 9l-6 6" />
-        </svg>
-      );
-  }
-}
-
-export default function OrderCard({ order }: OrderCardProps) {
+function OrderCard({ order }: OrderCardProps) {
   const { updateStatus } = useAdminOrders();
-
   const currentIndex = statuses.indexOf(order.status);
 
   async function handleStatusChange(status: OrderStatus) {
@@ -133,89 +36,72 @@ export default function OrderCard({ order }: OrderCardProps) {
 
   return (
     <div className="orders-card rounded-xl p-5">
-      {/* Order header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="font-black text-neutral-900">
-            #{order.id.slice(0, 8)}
-          </p>
-
-          <p className="mt-1 text-sm text-zinc-500">
-            {order.deliveryName}
-          </p>
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-lg font-black text-neutral-900">#{order.id.slice(0, 8)}</p>
+          <p className={`mt-1 truncate ${mutedTextClass}`}>{order.deliveryName}</p>
         </div>
 
-        <p className="text-4xl font-black text-[#769898]">
-          {Number(order.total).toFixed(2)}<span className="text-[12px] text-neutral-600">INR</span>
+        <p className="shrink-0 text-3xl font-black pr-1 text-[#5DD3B6]">
+          {Number(order.total).toFixed(2)}
+          <span className="text-[12px] text-neutral-600"> INR</span>
         </p>
       </div>
 
-      {/* Status Stepper */}
-      <div className="mt-6">
+      <div className="mt-5">
         {order.status === "CANCELLED" ? (
           <div className="flex items-center gap-3 text-red-500">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full border border-red-500">
-              <StatusIcon status="CANCELLED" />
+            <div className={`${stepCircleClass} orders-status-cancelled text-red-600`}>
+              <OrderStatusIcon status="CANCELLED" />
             </div>
-
-            <span className="font-black text-neutral-900">
-              Cancelled
-            </span>
+            <span className="font-black text-neutral-900">Cancelled</span>
           </div>
         ) : (
-          <div>
+          <div className="grid grid-cols-5 gap-1">
             {statuses.map((status, index) => {
               const isActive = status === order.status;
-              const isCompleted =
-                currentIndex >= index;
-
-              const isLast =
-                index === statuses.length - 1;
+              const isCompleted = currentIndex >= index;
+              const isLast = index === statuses.length - 1;
 
               return (
-                <div key={status}>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleStatusChange(status)
-                    }
-                    className="group flex w-full items-center text-left"
-                  >
-                    {/* Circle */}
-                    <div
-                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 transition ${
-                        isCompleted
-                          ? "border-[#D99B77] bg-[#D99B77] text-neutral-900"
-                          : "border-zinc-300 bg-white text-zinc-400"
-                      }`}
-                    >
-                      <StatusIcon status={status} />
-                    </div>
-
-                    {/* Label */}
-                    <span
-                      className={`ml-3 text-sm transition ${
-                        isActive
-                          ? "font-black text-[#D99B77]"
-                          : isCompleted
-                            ? "font-medium text-zinc-700"
-                            : "text-zinc-400"
-                      } group-hover:text-[#D99B77]`}
-                    >
-                      {statusLabels[status]}
-                    </span>
-                  </button>
-
-                  {/* Vertical line */}
+                <div key={status} className="relative flex min-w-0 flex-col items-center">
                   {!isLast && (
                     <div
-                      className={`ml-[17px] h-8 w-[2px] ${
+                      className={`absolute left-[calc(50%+18px)] right-[calc(-50%+18px)] top-[18px] h-[2px] ${
                         currentIndex > index
-                          ? "bg-[#D99B77]"
-                          : "bg-zinc-200"
+                          ? "orders-step-line-active"
+                          : "orders-step-line-idle"
                       }`}
                     />
                   )}
+
+                  <button
+                    type="button"
+                    onClick={() => handleStatusChange(status)}
+                    className="group relative flex min-w-0 flex-col items-center gap-2 text-center"
+                  >
+                    <div
+                      className={`${stepCircleClass} ${
+                        isCompleted
+                          ? "orders-step-active text-neutral-900"
+                          : "orders-step-idle text-zinc-400"
+                      }`}
+                    >
+                      <OrderStatusIcon status={status} className="h-5 w-5" />
+                    </div>
+
+                    <span
+                      className={`w-full text-[11px] font-bold leading-3 transition ${
+                        isActive
+                          ? "text-[#ED7B7B]"
+                          : isCompleted
+                            ? "text-neutral-700"
+                            : "text-zinc-400"
+                      } group-hover:text-[#ED7B7B]`}
+                    >
+                      {statusInfo[status].label}
+                    </span>
+                  </button>
                 </div>
               );
             })}
@@ -223,44 +109,49 @@ export default function OrderCard({ order }: OrderCardProps) {
         )}
       </div>
 
-      {/* Items */}
-      <div className="mt-6 border-t border-zinc-100 pt-4">
-        <p className="mb-3 text-sm font-medium">
-          {order.items.length} items
-        </p>
+      <div className="mt-6 space-y-3">
+        <div className={detailPanelClass}>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <p className={detailLabelClass}>Items</p>
+            <span className="text-[12px] font-black text-neutral-600">
+              {order.items.length} total
+            </span>
+          </div>
 
-        <div className="space-y-2">
-          {order.items.map((item) => (
-            <div
-              key={item.id}
-              className="flex justify-between text-sm"
-            >
-              <span className="text-zinc-600">
-                {item.menuItem.name} × {item.quantity}
-              </span>
-
-              <span>
-                ₹{Number(item.subtotal).toFixed(2)}
-              </span>
-            </div>
-          ))}
+          <div className="space-y-2">
+            {order.items.map((item) => (
+              <div key={item.id} className="grid grid-cols-[1fr_auto] items-center gap-4 text-sm">
+                <span className="min-w-0 truncate font-bold text-neutral-700">
+                  {item.menuItem.name} × {item.quantity}
+                </span>
+                <span className="text-right font-black text-neutral-900">
+                  ₹{Number(item.subtotal).toFixed(2)}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Delivery */}
-      <div className="mt-4 border-t border-zinc-100 pt-4">
-        <p className="text-sm font-medium">
-          Delivery
-        </p>
-
-        <p className="mt-1 text-sm text-zinc-500">
-          {order.deliveryAddress}
-        </p>
-
-        <p className="text-sm text-zinc-500">
-          {order.deliveryPhone}
-        </p>
+        <div className={detailPanelClass}>
+          <p className={detailLabelClass}>Delivery Details</p>
+          <div className="mt-3 grid gap-2 text-sm">
+            <div className="grid grid-cols-[76px_1fr] gap-3">
+              <span className="font-bold text-neutral-500">Name</span>
+              <span className="font-black text-neutral-900">{order.deliveryName}</span>
+            </div>
+            <div className="grid grid-cols-[76px_1fr] gap-3">
+              <span className="font-bold text-neutral-500">Phone</span>
+              <span className="font-black text-neutral-900">{order.deliveryPhone}</span>
+            </div>
+            <div className="grid grid-cols-[76px_1fr] gap-3">
+              <span className="font-bold text-neutral-500">Address</span>
+              <span className="font-black leading-5 text-neutral-900">{order.deliveryAddress}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
+
+export default memo(OrderCard);

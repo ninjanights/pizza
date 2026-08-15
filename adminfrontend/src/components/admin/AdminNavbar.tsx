@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { LogOut, Pizza, ShoppingCart, Utensils } from "lucide-react";
+import { LogOut, ShoppingCart, Utensils } from "lucide-react";
 import { adminLogout } from "../../services/admin.service";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 
@@ -24,8 +24,8 @@ export default function AdminNavbar() {
     <nav className="flex h-16 items-center justify-between bg-neutral-300 px-6">
       {/* Logo */}
       <NavLink to="/dashboard" className="flex items-center gap-2 text-xl font-bold text-zinc-900">
-        <Pizza className="h-6 w-6" />
-        <span>Pizza</span>
+        <img src="/pizza.svg" alt="Pizza" className="h-7 w-7" />
+        <span>Pizza Loom</span>
       </NavLink>
 
       {/* Links */}
@@ -34,8 +34,8 @@ export default function AdminNavbar() {
           to="/dashboard"
           className={({ isActive }) =>
             isActive
-              ? "font-bold text-[#D99B77]"
-              : "font-bold text-zinc-500 hover:text-[#D99B77]"
+              ? "font-bold text-[#ED7B7B]"
+              : "font-bold text-zinc-500 hover:text-[#ED7B7B]"
           }
         >
           Dashboard
@@ -44,8 +44,8 @@ export default function AdminNavbar() {
           to="/menu"
           className={({ isActive }) =>
             isActive
-              ? "font-bold text-[#D99B77]"
-              : "font-bold text-zinc-500 hover:text-[#D99B77]"
+              ? "font-bold text-[#ED7B7B]"
+              : "font-bold text-zinc-500 hover:text-[#ED7B7B]"
           }
         >
           <span className="flex items-center gap-2"><Utensils className="h-4 w-4" />Menu</span>
@@ -55,8 +55,8 @@ export default function AdminNavbar() {
           to="/orders"
           className={({ isActive }) =>
             isActive
-              ? "font-bold text-[#D99B77]"
-              : "font-bold text-zinc-500 hover:text-[#D99B77]"
+              ? "font-bold text-[#ED7B7B]"
+              : "font-bold text-zinc-500 hover:text-[#ED7B7B]"
           }
         >
           <span className="flex items-center gap-2"><ShoppingCart className="h-4 w-4" />Orders</span>
@@ -64,7 +64,7 @@ export default function AdminNavbar() {
 
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 rounded-lg px-3 py-2 font-bold text-zinc-500 hover:bg-zinc-100 hover:text-[#D99B77]"
+          className="flex items-center gap-2 rounded-lg px-3 py-2 font-bold text-zinc-500 hover:bg-zinc-100 hover:text-[#ED7B7B]"
         >
           <LogOut className="h-4 w-4" />Logout
         </button>
@@ -72,3 +72,4 @@ export default function AdminNavbar() {
     </nav>
   );
 }
+

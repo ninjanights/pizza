@@ -14,6 +14,7 @@ datasource db {
 enum OrderStatus {
   RECEIVED
   PREPARING
+  READY
   OUT_FOR_DELIVERY
   DELIVERED
   CANCELLED
@@ -47,6 +48,7 @@ model Order {
   id              String      @id @default(uuid())
   sessionId       String
   status          OrderStatus @default(RECEIVED)
+  statusChangedAt DateTime    @default(now())
   deliveryName    String
   deliveryPhone   String
   deliveryAddress String
@@ -58,6 +60,7 @@ model Order {
   items           OrderItem[]
   @@index([sessionId])
   @@index([status])
+  @@index([statusChangedAt])
   @@index([createdAt])
 }
 
@@ -83,4 +86,11 @@ model Admin {
   passwordHash String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model StoreSetting {
+  id                   String   @id @default(uuid())
+  autoOrderProgression Boolean  @default(false)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }

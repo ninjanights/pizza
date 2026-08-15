@@ -9,6 +9,7 @@ import orderRoutes from "./routes/order.routes.js";
 import adminAuthRoutes from "./routes/admin.auth.routes.js";
 import adminOrderRoutes from "./routes/admin.order.routes.js";
 import adminSessionRoutes from "./routes/admin.session.routes.js";
+import adminSettingsRoutes from "./routes/admin.settings.routes.js";
 
 const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
 const app = express();
@@ -50,5 +51,5 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/admin", adminAuthRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
 app.use("/api/admin/sessions", adminSessionRoutes);
-
+app.use("/api/admin/settings", adminSettingsRoutes);
 export default app;

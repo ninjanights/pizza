@@ -48,17 +48,14 @@ export default function Checkout() {
   }
 
   return (
-    <main className="mx-auto max-w-2xl p-6">
-      <h1 className="mb-6 text-2xl font-bold">
+    <main className="mx-auto w-full max-w-2xl bg-transparent p-6">
+      <h1 className="mb-5 text-center text-xl font-bold text-neutral-900">
         Checkout
       </h1>
 
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4 rounded-xl border bg-white p-6"
-      >
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium">
+          <label className="mb-2 block text-sm font-bold text-neutral-700">
             Name
           </label>
 
@@ -66,12 +63,12 @@ export default function Checkout() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="mt-1 w-full rounded-lg border p-2"
+            className="home-auth-input font-black w-full border-4 border-neutral-400 rounded-lg px-4 py-3 text-sm text-neutral-900 outline-none placeholder:text-neutral-700"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium">
+          <label className="mb-2 block text-sm font-bold text-neutral-700">
             Phone
           </label>
 
@@ -80,40 +77,40 @@ export default function Checkout() {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             required
-            className="mt-1 w-full rounded-lg border p-2"
+            className="home-auth-input font-black 
+            w-full border-4 
+            border-neutral-400 rounded-lg px-4 py-3 text-sm text-neutral-900 outline-none placeholder:text-neutral-700"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium">
+          <label className="mb-2 block text-sm font-bold text-neutral-700">
             Address
           </label>
 
-          <textarea
+          <input
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             required
-            rows={3}
-            className="mt-1 w-full rounded-lg border p-2"
+          
+            className="home-auth-input font-black w-full border-4 border-neutral-400 rounded-lg px-4 py-3 text-sm text-neutral-900 outline-none placeholder:text-neutral-700"
           />
         </div>
 
-        <div className="border-t pt-4">
-          <p className="text-lg font-bold">
-            Total: ₹{totalPrice.toLocaleString("en-IN")}
+        <div className="pt-4">
+          <p className="text-[24px]  font-black text-neutral-800">
+            Total: <span className=" mr-1 text-4xl font-black text-[#5DD3B6]">{totalPrice.toLocaleString("en-IN")}</span><span className="text-sm">INR</span>
           </p>
         </div>
 
         {error && (
-          <p className="text-sm text-red-500">
-            {error}
-          </p>
+          <p className="text-sm text-red-500">{error}</p>
         )}
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-black px-4 py-3 text-white disabled:opacity-50"
+          className="home-login-button w-full rounded-xl px-6 py-5 text-center text-lg font-bold text-neutral-100 disabled:opacity-60"
         >
           {loading ? "Placing order..." : "Confirm Order"}
         </button>

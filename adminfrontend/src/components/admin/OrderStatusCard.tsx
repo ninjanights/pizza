@@ -1,133 +1,74 @@
+import { OrderStatusIcon, statusInfo } from "./orderStatusMeta";
 import type { StatusStats } from "../../context/AdminOrderContext";
-import type { OrderStatus } from "../../types/order";
 
 type OrderStatusCardProps = {
-  data: StatusStats
+  data: StatusStats;
+  onClick?: () => void;
 };
 
-const statusInfo: Record<
-  OrderStatus,
-  {
-    label: string;
-    icon: string;
-  }
-> = {
-  RECEIVED: {
-    label: "Received",
-    icon: "📦",
-  },
-  PREPARING: {
-    label: "Preparing",
-    icon: "🍳",
-  },
-  READY: {
-    label: "Ready",
-    icon: "✓",
-  },
-  OUT_FOR_DELIVERY: {
-    label: "Out for Delivery",
-    icon: "🚚",
-  },
-  DELIVERED: {
-    label: "Delivered",
-    icon: "✓",
-  },
-  CANCELLED: {
-    label: "Cancelled",
-    icon: "✕",
-  },
-};
+const labelClass = "text-xs font-medium text-neutral-600";
+const valueClass = "mt-1 text-sm font-bold text-neutral-900";
 
-export default function OrderStatusCard({
-  data
-}: OrderStatusCardProps) {
+export default function OrderStatusCard({ data, onClick }: OrderStatusCardProps) {
   const info = statusInfo[data.status];
- return (
-    <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-      {/* Header */}
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="orders-card w-full rounded-xl p-5 text-left transition hover:-translate-y-0.5"
+    >
       <div className="flex items-center justify-between">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-100 text-2xl">
-          {info.icon}
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-neutral-300 text-neutral-900">
+          <OrderStatusIcon status={data.status} />
         </div>
 
-        <span className="text-sm text-zinc-500">
-          {data.orderCount}{" "}
-          {data.orderCount === 1 ? "order" : "orders"}
+        <span className="rounded-full bg-neutral-300 px-3 py-1 text-sm font-black text-neutral-700">
+          {data.orderCount} {data.orderCount === 1 ? "order" : "orders"}
         </span>
       </div>
 
-      {/* Status */}
-      <h2 className="mt-4 text-lg font-semibold text-zinc-900">
+      <h2 className="mt-4 text-lg font-black text-neutral-900">
         {info.label}
       </h2>
 
-      {/* Revenue */}
-      <p className="mt-2 text-2xl font-bold text-zinc-900">
+      <p className="mt-2 text-4xl font-black text-[#5DD3B6]">
         ₹{data.revenue.toLocaleString("en-IN")}
       </p>
 
-      <p className="text-xs text-zinc-500">
-        Total order value
-      </p>
+      <p className={labelClass}>Total order value</p>
 
-      {/* Details */}
-      <div className="mt-5 space-y-3 border-t border-zinc-100 pt-4">
-
+      <div className="mt-5 space-y-4 pt-4">
         <div>
-          <p className="text-xs text-zinc-500">
-            Most ordered place
+          <p className={labelClass}>Most ordered place</p>
+          <p className={valueClass}>
+            {data.mostOrderedPlace ? data.mostOrderedPlace.address : "-"}
           </p>
-
-          <p className="text-sm font-medium text-zinc-900">
-            {data.mostOrderedPlace
-              ? data.mostOrderedPlace.address
-              : "-"}
-          </p>
-
           {data.mostOrderedPlace && (
-            <p className="text-xs text-zinc-500">
-              {data.mostOrderedPlace.orderCount} orders
-            </p>
+            <p className={labelClass}>{data.mostOrderedPlace.orderCount} orders</p>
           )}
         </div>
 
         <div>
-          <p className="text-xs text-zinc-500">
-            Most ordered customer
+          <p className={labelClass}>Most ordered customer</p>
+          <p className={valueClass}>
+            {data.mostOrderedCustomer ? data.mostOrderedCustomer.name : "-"}
           </p>
-
-          <p className="text-sm font-medium text-zinc-900">
-            {data.mostOrderedCustomer
-              ? data.mostOrderedCustomer.name
-              : "-"}
-          </p>
-
           {data.mostOrderedCustomer && (
-            <p className="text-xs text-zinc-500">
-              {data.mostOrderedCustomer.orderCount} orders
-            </p>
+            <p className={labelClass}>{data.mostOrderedCustomer.orderCount} orders</p>
           )}
         </div>
 
         <div>
-          <p className="text-xs text-zinc-500">
-            Most ordered item
+          <p className={labelClass}>Most ordered item</p>
+          <p className={valueClass}>
+            {data.mostOrderedItem ? data.mostOrderedItem.name : "-"}
           </p>
-
-          <p className="text-sm font-medium text-zinc-900">
-            {data.mostOrderedItem
-              ? data.mostOrderedItem.name
-              : "-"}
-          </p>
-
           {data.mostOrderedItem && (
-            <p className="text-xs text-zinc-500">
-              {data.mostOrderedItem.quantity} ordered
-            </p>
+            <p className={labelClass}>{data.mostOrderedItem.quantity} ordered</p>
           )}
         </div>
-
       </div>
-    </div>
+    </button>
   );
 }

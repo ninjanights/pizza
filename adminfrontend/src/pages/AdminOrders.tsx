@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import OrderCard from "../components/admin/OrderCard";
-import { getAdminOrders } from "../services/admin.service";
-import type { AdminOrder, OrderStatus } from "../types/order";
+import { useAdminOrders } from "../context/AdminOrderContext";
+import type { OrderStatus } from "../types/order";
 
 const statuses: (OrderStatus | "ALL")[] = [
   "ALL",
@@ -13,48 +14,54 @@ const statuses: (OrderStatus | "ALL")[] = [
   "CANCELLED",
 ];
 
+const pageHeaderClass = "mb-6 flex items-center gap-4 px-8";
+const headerTextClass = "max-w-xl text-[12px] font-medium leading-6 text-neutral-700";
+const filterButtonClass = "rounded-lg px-4 py-2 text-sm font-black";
+
+function getValidStatus(value: string | null): OrderStatus | "ALL" {
+  return statuses.includes(value as OrderStatus | "ALL")
+    ? (value as OrderStatus | "ALL")
+    : "ALL";
+}
+
 export default function AdminOrders() {
-  const [orders, setOrders] = useState<AdminOrder[]>([]);
-  const [status, setStatus] = useState<OrderStatus | "ALL">("ALL");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { orders, totalPages, loading, error, loadOrders } = useAdminOrders();
+  const [status, setStatus] = useState<OrderStatus | "ALL">(() =>
+    getValidStatus(searchParams.get("status")),
+  );
   const [page, setPage] = useState(1);
 
-  const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  useEffect(() => {
+    const urlStatus = getValidStatus(searchParams.get("status"));
+
+    setStatus(urlStatus);
+    setPage(1);
+  }, [searchParams]);
 
   useEffect(() => {
-    async function loadOrders() {
-      try {
-        setLoading(true);
-        setError("");
+    loadOrders(page, status);
+  }, [loadOrders, page, status]);
 
-        const data = await getAdminOrders(page, status);
-
-        setOrders(data.orders);
-        setTotalPages(data.pagination.totalPages);
-      } catch (error) {
-        setError(
-          error instanceof Error
-            ? error.message
-            : "Failed to load orders",
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadOrders();
-  }, [page, status]);
+  const orderCards = useMemo(
+    () => orders.map((order) => <OrderCard key={order.id} order={order} />),
+    [orders],
+  );
 
   function handleStatusChange(newStatus: OrderStatus | "ALL") {
     setStatus(newStatus);
-
-    // Whenever filter changes, start from page 1
     setPage(1);
+
+    if (newStatus === "ALL") {
+      setSearchParams({});
+      return;
+    }
+
+    setSearchParams({ status: newStatus });
   }
 
   if (loading) {
-    return <p>Loading orders...</p>;
+    return <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-6"><p className="text-xl font-black text-neutral-500">Loading orders...</p></main>;
   }
 
   if (error) {
@@ -63,16 +70,15 @@ export default function AdminOrders() {
 
   return (
     <main className="p-6">
-      <div className="mb-6 px-[32px] flex items-center gap-4">
+      <div className={pageHeaderClass}>
         <h1 className="text-2xl font-black">Orders</h1>
         <div className="h-12 w-[1px] bg-neutral-400"></div>
-        <p className="max-w-xl text-[12px] font-medium leading-6 text-neutral-700">
-          Every order has its own small weather system.
-          Nudge the status forward and keep the kitchen sky clear.
+        <p className={headerTextClass}>
+          Every order has its own small weather system. Nudge the status forward
+          and keep the kitchen sky clear.
         </p>
       </div>
 
-      {/* Status filters */}
       <div className="mb-6 flex flex-wrap gap-2">
         {statuses.map((item) => (
           <button
@@ -80,8 +86,8 @@ export default function AdminOrders() {
             onClick={() => handleStatusChange(item)}
             className={
               status === item
-                ? "orders-accent-button rounded-lg px-4 py-2 font-black text-neutral-900"
-                : "orders-filter-button rounded-lg px-4 py-2 font-black text-neutral-600"
+                ? `orders-accent-button ${filterButtonClass} text-neutral-900`
+                : `orders-filter-button ${filterButtonClass} text-neutral-600`
             }
           >
             {item.replaceAll("_", " ")}
@@ -89,41 +95,32 @@ export default function AdminOrders() {
         ))}
       </div>
 
-      {/* Orders */}
-      <div className="grid gap-4">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {orders.length === 0 ? (
-          <p className="text-zinc-500">
-            No orders found.
-          </p>
+          <p className="col-span-full flex min-h-[50vh] items-center justify-center text-xl font-black text-neutral-500">No orders found.</p>
         ) : (
-          orders.map((order) => (
-            <OrderCard
-              key={order.id}
-              order={order}
-            />
-          ))
+          orderCards
         )}
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="mt-6 flex items-center gap-4">
           <button
             disabled={page === 1}
             onClick={() => setPage((p) => p - 1)}
-            className="rounded-lg border px-4 py-2 disabled:opacity-40"
+            className="orders-filter-button rounded-lg px-4 py-2 font-black text-neutral-700 disabled:opacity-40"
           >
             Previous
           </button>
 
-          <span>
+          <span className="text-sm font-bold text-neutral-600">
             Page {page} of {totalPages}
           </span>
 
           <button
             disabled={page === totalPages}
             onClick={() => setPage((p) => p + 1)}
-            className="rounded-lg border px-4 py-2 disabled:opacity-40"
+            className="orders-filter-button rounded-lg px-4 py-2 font-black text-neutral-700 disabled:opacity-40"
           >
             Next
           </button>

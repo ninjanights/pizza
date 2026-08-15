@@ -32,8 +32,8 @@ export default function AdminLogin() {
 
   return (
     <div className=" w-full bg-transparent">
-      <h1 className="mb-5 text-center text-xl font-bold text-neutral-900">
-        Admin Login
+      <h1 className="mb-4 text-center text-sm font-bold text-neutral-800">
+        Admin? Please Log in to manage the orders.
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -66,7 +66,6 @@ export default function AdminLogin() {
             className="home-auth-input font-black border-4 border-neutral-400 w-full rounded-lg px-4 py-3 text-sm text-neutral-900 outline-none placeholder:text-neutral-700"
           />
         </div>
-
         {error && <p className="text-sm font-medium text-red-600">{error}</p>}
 
         <button

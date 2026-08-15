@@ -61,37 +61,43 @@ body {
 }
 
 .home-walk-card {
-  background: #D99B77 !important;
+  background: #ED7B7B!important;
 }
 .app-shell .home-auth-input {
   background: transparent !important;
-  border: 4px solid #e4e4e7 !important; /* neutral-200 */
+  border: 4px solid #a3a3a3 !important; /* neutral-400 */
+  border-color: #a3a3a3 !important;
+}
+
+.app-shell .home-auth-input:focus,
+.app-shell .home-auth-input:focus-visible {
+  border-color: #a3a3a3 !important;
 }
 
 .app-shell .home-login-button {
-  background: #D99B77 !important;
+  background: #ED7B7B!important;
 }
 .app-shell .cart-card {
   background: #e4e4e7 !important; /* neutral-200 */
 }
 
 .app-shell .cart-accent-button {
-  background: #D99B77 !important;
+  background: #ED7B7B!important;
 }
 .app-shell .orders-card {
   background: #e4e4e7 !important; /* neutral-200 */
 }
 
 .app-shell .orders-accent-button {
-  background: #D99B77 !important;
+  background: #ED7B7B!important;
 }
 
 .app-shell .orders-status-active {
-  background: #d4d4d8 !important; /* neutral-300 */
+  background: #e7d4bb !important; /* pastel brown */
 }
 
 .app-shell .orders-status-delivered {
-  background: #bbf7d0 !important;
+  background: #d6b998 !important; /* pastel brown */
 }
 
 .app-shell .orders-status-cancelled {
@@ -99,4 +105,56 @@ body {
 }
 .app-shell .orders-filter-button {
   background: #e4e4e7 !important; /* neutral-200 */
+}
+
+/* Compact mode overrides: reduce padding, gaps, and large text for a tighter layout */
+.app-shell {
+  font-size: 14px !important;
+}
+
+.app-shell h1 { font-size: 1.25rem !important; margin-bottom: 0.5rem !important; }
+.app-shell h2 { font-size: 1rem !important; }
+
+.app-shell .orders-card { padding: 12px !important; }
+.app-shell .cart-card { padding: 8px !important; }
+
+.app-shell .home-walk-card,
+.app-shell .home-login-button {
+  padding: 0.5rem 1rem !important;
+  border-radius: 0.6rem !important;
+}
+
+.app-shell .home-auth-input { padding: 0.5rem 1rem !important; }
+
+.app-shell .space-y-4 > * + * { margin-top: 0.5rem !important; }
+.app-shell .mt-5 { margin-top: 0.75rem !important; }
+.app-shell .mb-6 { margin-bottom: 0.75rem !important; }
+
+.app-shell .gap-4 { gap: 0.5rem !important; }
+.app-shell .gap-3 { gap: 0.4rem !important; }
+
+.app-shell .text-2xl { font-size: 1.125rem !important; }
+.app-shell .text-xl { font-size: 1rem !important; }
+.app-shell .text-3xl { font-size: 1.25rem !important; }
+.app-shell .text-4xl { font-size: 1.5rem !important; }
+
+.app-shell .p-6 { padding: 0.75rem !important; }
+.app-shell .p-5 { padding: 0.5rem !important; }
+.app-shell .p-4 { padding: 0.5rem !important; }
+
+
+.app-shell .orders-step-active {
+  background: #e7d4bb !important; /* pastel brown */
+}
+
+.app-shell .orders-step-idle {
+  background: #d4d4d8 !important;
+}
+
+.app-shell .orders-step-line-active {
+  background: #e7d4bb !important; /* pastel brown */
+}
+
+.app-shell .orders-step-line-idle {
+  background: #a3a3a3 !important;
 }
