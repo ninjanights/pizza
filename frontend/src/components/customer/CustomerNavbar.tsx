@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { ChevronLeft, ShoppingCart, Utensils } from "lucide-react";
+import { ChevronLeft, ShoppingCart, Utensils, FileText } from "lucide-react";
 import { useCart } from "../../context/CartContext";
 
 export default function CustomerNavbar() {
@@ -14,7 +14,21 @@ export default function CustomerNavbar() {
           <img src="/pizza.svg" alt="Pizza" className="h-7 w-7" />
           <span>Pizza Loom</span>
         </NavLink>
-        <span className="text-zinc-500">·</span>
+          <div className="mx-2 h-6 w-px bg-neutral-400" aria-hidden="true" />
+
+          <NavLink
+            to="/docs"
+            className={({ isActive }) =>
+              `hidden items-center gap-2 text-sm font-bold sm:flex ${
+                isActive ? "text-[#ED7B7B]" : "text-neutral-700 hover:text-[#ED7B7B]"
+              }`
+            }
+          >
+            <FileText className="h-4 w-4" />
+            <span>Documentation</span>
+          </NavLink>
+
+          <span className="text-zinc-500">·</span>
         <button
           onClick={() => navigate("/admin/login")}
           className="flex items-center gap-1 text-sm font-medium text-zinc-700 hover:text-[#ED7B7B]"

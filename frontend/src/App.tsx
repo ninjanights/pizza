@@ -5,6 +5,7 @@ import PublicRoute from "./components/PublicRoute";
 import { AdminOrdersProvider } from "./context/AdminOrderContext";
 import AdminLayout from "./layouts/AdminLayout";
 import Home from "./pages/Home";
+import PublicProcess from "./components/PublicProcess";
 import { MenuProvider } from "./context/MenuContext";
 import CustomerOrders from "./pages/CustomerOrders";
 import Cart from "./pages/Cart";
@@ -35,6 +36,7 @@ function App() {
                       <Route path="/menu" element={<MenuPage />} />
 
                       <Route element={<CustomerLayout />}>
+                        <Route path="/docs" element={<PublicProcess />} />
                         <Route path="/cart" element={<Cart />} />
                         <Route path="/checkout" element={<Checkout />} />
 

@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { LogOut, ShoppingCart, Utensils } from "lucide-react";
+import { FileText, LogOut, ShoppingCart, Utensils } from "lucide-react";
 import { adminLogout } from "../../services/admin.service";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 
@@ -24,10 +24,23 @@ export default function AdminNavbar() {
     <nav className="relative flex flex-col gap-2 bg-neutral-300 px-4 py-3 
     sm:flex-row sm:h-16 sm:items-center sm:justify-between sm:px-6 sm:py-0">
       {/* Logo */}
-      <div className="flex items-center justify-center gap-8 sm:justify-start">
+      <div className="flex items-center justify-center gap-3 sm:justify-start">
         <NavLink to="/dashboard" className="flex items-center gap-2 text-lg font-bold text-zinc-900 sm:text-xl">
           <img src="/pizza.svg" alt="Pizza" className="h-6 w-6 sm:h-7 sm:w-7" />
           <span>Pizza Loom</span>
+        </NavLink>
+        <div className="mx-2 h-6 w-px bg-neutral-400" aria-hidden="true" />
+        
+        <NavLink
+          to="/docs"
+          className={({ isActive }) =>
+            `hidden items-center gap-2 text-sm font-bold sm:flex ${
+              isActive ? "text-[#ED7B7B]" : "text-neutral-700 hover:text-[#ED7B7B]"
+            }`
+          }
+        >
+          <FileText className="h-4 w-4" />
+          <span>Documentation</span>
         </NavLink>
       </div>
 
