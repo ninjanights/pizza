@@ -11,7 +11,11 @@ import adminOrderRoutes from "./routes/admin.order.routes.js";
 import adminSessionRoutes from "./routes/admin.session.routes.js";
 import adminSettingsRoutes from "./routes/admin.settings.routes.js";
 
-const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://pizzaloom.vercel.app",
+];
 const app = express();
 app.use(
   cors({
