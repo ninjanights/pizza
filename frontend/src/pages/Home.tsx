@@ -9,9 +9,9 @@ export default function Home() {
     <div className="flex min-h-screen flex-col">
       <main className="flex flex-1 items-center justify-center px-6 py-10">
         <div className="flex w-full max-w-3xl flex-col items-center text-center">
-          <img src="/pizza.svg" alt="Pizza" className="mb-5 h-24 w-24" />
+          <img src="/pizza.svg" alt="Pizza" className="mb-5 h-20 w-20 sm:h-24 sm:w-24" />
 
-          <h1 className="mb-8 text-[120px] font-black leading-none text-zinc-900">
+          <h1 className="mb-8 text-5xl sm:text-[120px] font-black leading-none text-zinc-900">
             Pizza Loom
           </h1>
 

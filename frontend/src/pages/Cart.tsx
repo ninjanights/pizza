@@ -1,4 +1,4 @@
-import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
+import { ArrowLeft, Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
@@ -20,13 +20,16 @@ export default function Cart() {
   if (cart.items.length === 0) {
     return (
       <main className="p-6">
-        <div className={pageHeaderClass}>
-          <h1 className="text-2xl font-black">Cart</h1>
-          <div className="h-12 w-[1px] bg-neutral-400"></div>
-          <p className={headerTextClass}>
-            Your cart is waiting for its first little masterpiece. Pick a
-            favorite dish and we will start warming up the route.
-          </p>
+        <div className="mb-6 flex items-center justify-between gap-4 px-8">
+          <div className={pageHeaderClass}>
+            <h1 className="text-2xl font-black">Cart</h1>
+            <div className="h-12 w-[1px] bg-neutral-400"></div>
+            <p className={headerTextClass}>
+              Your cart is waiting for its first little masterpiece. Pick a
+              favorite dish and we will start warming up the route.
+            </p>
+          </div>
+
         </div>
 
         <div className="mx-auto flex max-w-md flex-col items-center rounded-xl p-8 text-center">
@@ -45,13 +48,23 @@ export default function Cart() {
 
   return (
     <main className="p-6">
-      <div className={pageHeaderClass}>
-        <h1 className="text-2xl font-black">Cart</h1>
-        <div className="h-12 w-[1px] bg-neutral-400"></div>
-        <p className={headerTextClass}>
-          Your chosen bites are lined up and ready for the road. One tap more
-          and we will bring the feast to your doorstep.
-        </p>
+      <div className="mb-6 flex items-center justify-between gap-4 px-8">
+        <div className={pageHeaderClass}>
+          <h1 className="text-2xl font-black">Cart</h1>
+          <div className="h-12 w-[1px] bg-neutral-400"></div>
+          <p className={headerTextClass}>
+            Your chosen bites are lined up and ready for the road. One tap more
+            and we will bring the feast to your doorstep.
+          </p>
+        </div>
+
+        <button
+          onClick={() => navigate("/menu")}
+          className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-black text-[#ED7B7B]"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Cart
+        </button>
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_320px]">

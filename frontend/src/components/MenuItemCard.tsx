@@ -42,16 +42,16 @@ export default function MenuItemCard({
             {item.description}
           </p>
 
-          <p className="mt-3 text-4xl font-black text-[#5DD3B6]">
+          <p className="mt-3 text-2xl sm:text-4xl font-black text-[#5DD3B6]">
             {item.price}
-            <span className="text-[12px] text-neutral-600">INR</span>
+            <span className="ml-1 text-[12px] text-neutral-600">INR</span>
           </p>
         </div>
 
         <img
           src={foodIcon}
           alt=""
-          className="h-24 w-24 shrink-0 object-contain"
+          className="h-20 w-20 sm:h-24 sm:w-24 shrink-0 object-contain"
           aria-hidden="true"
         />
       </div>
@@ -77,7 +77,7 @@ export default function MenuItemCard({
                   <Minus className="h-6 w-6" strokeWidth={3} />
                 </button>
 
-                <span className="min-w-6 text-center text-4xl font-black text-neutral-800">
+                <span className="min-w-6 text-center text-2xl sm:text-4xl font-black text-neutral-800">
                   {quantity}
                 </span>
 
