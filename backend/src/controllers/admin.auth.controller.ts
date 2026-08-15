@@ -29,6 +29,8 @@ export const loginAdminController = async (
   secure: process.env.NODE_ENV === "production",
   sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   maxAge: 8 * 60 * 60 * 1000,
+    path: "/",
+
 });
 
     return res.status(200).json({
@@ -67,6 +69,8 @@ export const logoutAdminController = (
     sameSite: process.env.NODE_ENV === "production"
       ? "none"
       : "lax",
+        path: "/",
+
   });
 
   return res.status(200).json({

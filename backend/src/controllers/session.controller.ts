@@ -37,6 +37,8 @@ if (existingSessionId) {
           ? "none"
           : "lax",
       expires: session.expiresAt,
+        path: "/",
+
     });
 
     return res.status(201).json({
