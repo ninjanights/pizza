@@ -21,9 +21,10 @@ export default function AdminNavbar() {
   }
 
   return (
-    <nav className="relative flex flex-col gap-2 bg-neutral-300 px-4 py-3 sm:flex-row sm:h-16 sm:items-center sm:justify-between sm:px-6 sm:py-0">
+    <nav className="relative flex flex-col gap-2 bg-neutral-300 px-4 py-3 
+    sm:flex-row sm:h-16 sm:items-center sm:justify-between sm:px-6 sm:py-0">
       {/* Logo */}
-      <div className="flex items-center justify-center sm:justify-start">
+      <div className="flex items-center justify-center gap-8 sm:justify-start">
         <NavLink to="/dashboard" className="flex items-center gap-2 text-lg font-bold text-zinc-900 sm:text-xl">
           <img src="/pizza.svg" alt="Pizza" className="h-6 w-6 sm:h-7 sm:w-7" />
           <span>Pizza Loom</span>
@@ -31,7 +32,7 @@ export default function AdminNavbar() {
       </div>
 
       {/* Links */}
-      <div className="flex flex-wrap items-center justify-center gap-3 text-xs sm:gap-6 sm:text-sm">
+      <div className="flex items-center gap-6">
         <NavLink
           to="/dashboard"
           className={({ isActive }) =>
@@ -50,7 +51,7 @@ export default function AdminNavbar() {
               : "font-bold text-zinc-500 hover:text-[#ED7B7B]"
           }
         >
-          <span className="flex items-center gap-1 sm:gap-2"><Utensils className="h-3.5 w-3.5 sm:h-4 sm:w-4" />Menu</span>
+          <span className="flex items-center gap-2"><Utensils className="h-4 w-4" />Menu</span>
         </NavLink>
 
         <NavLink
@@ -61,12 +62,12 @@ export default function AdminNavbar() {
               : "font-bold text-zinc-500 hover:text-[#ED7B7B]"
           }
         >
-          <span className="flex items-center gap-1 sm:gap-2"><ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />Orders</span>
+          <span className="flex items-center gap-1 gap-2"><ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />Orders</span>
         </NavLink>
 
         <button
           onClick={handleLogout}
-          className="flex items-center gap-1 rounded-lg px-2 py-1 font-bold text-zinc-500 hover:bg-zinc-100 hover:text-[#ED7B7B] sm:gap-2 sm:px-3 sm:py-2"
+          className="flex items-center gap-1 rounded-lg px-2 py-1 font-bold text-zinc-500 hover:text-[#ED7B7B] gap-2 sm:px-3 sm:py-2"
         >
           <LogOut className="h-3.5 w-3.5 sm:h-4 sm:w-4" />Logout
         </button>
